@@ -51,7 +51,7 @@ def build_response(p_obj, file_path, content_type, _query) -> bytes:
         read_file = bytes(file_path, encoding='utf8')
         length = len(read_file)
 
-    print(length)
+    #print(length)
     build_str += str(length)
     build_str += p_obj.slash_rn
     build_str += content_type
@@ -94,6 +94,26 @@ def on_post(option_1):
     return bytes("no implementation", encoding='utf8')
 
 
+def fill_map(data_array, return_map):
+    form = "form"
+    idx = 0
+    body = False
+    for i in range(1, len(data_array)):
+        if len(data_array[i]) != 0:
+            if data_array[i][0] != '-':
+                content = data_array[i].split(':')
+                if not body:
+                    return_map[content[0]] = content[1].replace(" ", "")
+                else:
+                    return_map[form + str(idx)] = content[0]
+                    idx += 1
+            else:
+                body = False
+        else:
+            body = True
+    return return_map
+
+
 class RequestHandler:
     path_obj = Paths()
 
@@ -107,10 +127,12 @@ class RequestHandler:
 
         return bytes_of_data
 
+
     def parser(self, request) -> dict:
         headers_map = {}
         sanitize = request.decode()
         split_data = sanitize.splitlines()
+
         for line in split_data:
             print(line)
 
@@ -123,5 +145,7 @@ class RequestHandler:
         headers_map["request_type"] = request_type  # should be GET or POST
         headers_map["path"] = path  # path searched for
         headers_map["version"] = version  # HTTP version the browser is using
-        # print(headers_map)
+
+        headers_map = fill_map(split_data, headers_map)
+        print(headers_map)
         return headers_map
