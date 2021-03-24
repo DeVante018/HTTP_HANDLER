@@ -22,12 +22,12 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         my_handler = RequestHandler()
         # self.request is the TCP socket connected to the client
         self.data = self.request.recv(1024).strip()
-        all_headers_map = my_handler.parser(self.data)
-        send_data = my_handler.process(all_headers_map)
+        send_data = my_handler.handle(self.data)
         sys.stdout.flush()
         # print("\n\n\n\n\n----sending response...----\n\n\n\n\n")
         # print(send_data)
         # print("\n\n\n\n\n----################-------\n\n\n\n\n")
+        print(send_data)
         self.request.sendall(send_data)  # data is already in bytes so no need to encode
 
 
