@@ -7,6 +7,7 @@ class Paths:
     get_hi = "GET/hiHTTP/1.1"
     icon = "GET/favicon.icoHTTP/1.1"
     post_request = "POST/HTTP/1.1"
+    comment = "POST/comment"
 
     ok = "200"
     redirect = "301"
