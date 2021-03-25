@@ -16,7 +16,16 @@
 </form>
 
 <h1>Comments</h1>
-
+<br>
+<hr>
+<form action="/image-upload" id="image-form" method="post" enctype="multipart/form-data">
+    <label for="form-file">Image: </label>
+    <input id="form-file" type="file" name="upload">
+    <br/>
+    <label for="image-form-name">Caption: </label>
+    <input id="image-form-name" type="text" name="name">
+    <input type="submit" value="Submit">
+</form>
 
 </body>
 </html>
