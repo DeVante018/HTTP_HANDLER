@@ -1,8 +1,11 @@
+import sys
+
 import paths
+from containers import Statics
 
 
 def build_response_comment(p_obj, content_arr):
-    template = open("/Users/devantefrederick/IdeaProjects/HTTP_HANDLER/src/sample_page/default_page.html", "r")
+    template = open("src/sample_page/default_page.html", "r")
     template = template.readlines()
     new_template = ""
     comment_section = False
@@ -21,24 +24,10 @@ def build_response_comment(p_obj, content_arr):
             comment_section = False
 
         new_template += x
-        f = open("/Users/devantefrederick/IdeaProjects/HTTP_HANDLER/src/sample_page/index.html", "w")
+        f = open("src/sample_page/index.html", "w")
         f.write(new_template)
     # print(new_template)
-
-    response_bytes = bytes(new_template, "utf8")
-    build_str = ""
-    build_str += p_obj.http_version + " " + p_obj.ok
-    build_str += p_obj.slash_rn
-    build_str += p_obj.content_length
-    build_str += str(len(response_bytes))
-    build_str += p_obj.slash_rn
-    build_str += p_obj.content_text_html
-    build_str += p_obj.slash_rn
-    build_str += p_obj.no_sniff
-    build_str += p_obj.slash_rn + p_obj.slash_rn
-    convert_bytes = bytes(build_str, encoding='utf8')
-    convert_bytes += response_bytes
-    return convert_bytes
+    return good(p_obj)
 
 
 def post_comment(dictionary, byt_array):
@@ -60,6 +49,8 @@ def post_comment(dictionary, byt_array):
     idx = 1
     sanitizing = True
     while sanitizing:
+        print("IDX", idx)
+        sys.stdout.flush()
         data = mult_part[idx]
         # print(data)
         if data.decode() == "--":
@@ -79,9 +70,9 @@ def post_comment(dictionary, byt_array):
 
 
 def upload_image(self_obj, headers, parse_array, socket, split_len):
-    print("LENGTH--------LENGTH")
-    print(headers['Content-Length'])
-    print("LENGTH--------LENGTH")
+    # print("LENGTH--------LENGTH")
+    # print(headers['Content-Length'])
+    # print("LENGTH--------LENGTH")
 
     boundary = headers['Content-Type'].split("=")
     in_boundary = "--" + boundary[1]
@@ -92,13 +83,13 @@ def upload_image(self_obj, headers, parse_array, socket, split_len):
     received = bytes("", encoding="utf8")
     caption = ""
     # print(boundary_bytes)
-    print("\n--------------POST REQUEST--------------\n")
-    for x in parse_array[1:]:
-        print("###############", x)
-    print("\n--------------POST REQUEST--------------\n")
+    # print("\n--------------POST REQUEST--------------\n")
+    # for x in parse_array[1:]:
+    # print("###############", x)
+    # print("\n--------------POST REQUEST--------------\n")
     read_all_bytes = -1
     if split_len < 2:
-        print("###########", split_len)
+        # print("###########", split_len)
         incoming_data = socket.request.recv(1024)
         incoming_data = incoming_data.split(bytes("\r\n\r\n", "utf8"))
         received = incoming_data[1]
@@ -108,7 +99,7 @@ def upload_image(self_obj, headers, parse_array, socket, split_len):
                 received += x
 
     while read_all_bytes == -1:
-        incoming_data = socket.request.recv(1024).strip()
+        incoming_data = socket.request.recv(1024)
         read_all_bytes = incoming_data.find(boundary_bytes)
         if read_all_bytes != -1:
             split_data = incoming_data.split(bytes("\r\n", "utf8"))
@@ -119,15 +110,23 @@ def upload_image(self_obj, headers, parse_array, socket, split_len):
                     stop_concat = True
                 if not stop_concat:
                     incoming_data += remaining_bytes
-            caption = split_data[len(split_data)-2]
+            caption = split_data[len(split_data) - 3]
+
         received += incoming_data
         # print(incoming_data)
-    print("FULL DATA: ", received)
-    print("Done reading...")
-    print("Uploaded image with caption: " + caption.decode())
+    # print("FULL DATA: ", received)
+    # print("Done reading...")
+    # print("Uploaded image with caption: " + caption.decode())
+    caption = caption.replace(b"&", b"&amp;")
+    caption = caption.replace(b"<", b"&lt;")
+    caption = caption.replace(b">", b"&gt;")
+    img_name = "image" + str(self_obj.upload_num) + ".jpg"
+
+    Statics.captions_images.append([caption.decode(), img_name])
 
     self_obj.images.append([caption.decode(), received])
-    w = open("/Users/devantefrederick/IdeaProjects/HTTP_HANDLER/src/uploads/image"+str(self_obj.upload_num)+".jpg", "wb")
+    w = open("src/sample_page/image/image" + str(
+        self_obj.upload_num) + ".jpg", "wb")
     self_obj.upload_num += 1
     w.write(received)
     # return test_recieved_image(p, received)
@@ -136,18 +135,11 @@ def upload_image(self_obj, headers, parse_array, socket, split_len):
 
 def good(p_obj):
     build_str = ""
-    build_str += p_obj.http_version + " " + p_obj.ok
+    build_str += p_obj.http_version + " " + p_obj.redirect
     build_str += p_obj.slash_rn
-    build_str += p_obj.content_length
-    build_str += str(len("image uploaded with caption successful"))
-    build_str += p_obj.slash_rn
-    build_str += p_obj.content_text_html
-    build_str += p_obj.slash_rn
-    build_str += p_obj.no_sniff
-    build_str += p_obj.slash_rn + p_obj.slash_rn
-    convert_bytes = bytes(build_str, encoding='utf8')
-    convert_bytes += bytes("image uploaded with caption successful", "utf8")
-    return convert_bytes
+    build_str += "Location: "
+    build_str += "/"
+    return bytes(build_str, encoding="utf8")
 
 
 def test_recieved_image(p_obj, array):
@@ -179,10 +171,21 @@ def error(p_obj):
     build_str += p_obj.slash_rn
     build_str += p_obj.no_sniff
     build_str += p_obj.slash_rn + p_obj.slash_rn
-    #convert_bytes = bytes(build_str, encoding='utf8')
-    #convert_bytes += response_bytes
+    # convert_bytes = bytes(build_str, encoding='utf8')
+    # convert_bytes += response_bytes
     build_str += response
     return bytes(build_str, encoding="utf8")
+
+
+def security_check(array):
+
+    array[0] = array[0].replace(b"&", b"&amp;")
+    array[0] = array[0].replace(b"<", b"&lt;")
+    array[0] = array[0].replace(b">", b"&gt;")
+    array[1] = array[1].replace(b"&", b"&amp;")
+    array[1] = array[1].replace(b"<", b"&lt;")
+    array[1] = array[1].replace(b">", b"&gt;")
+    return array
 
 
 class Post:
@@ -196,6 +199,7 @@ class Post:
         # this is a post request so we need to be very careful on parsing this
         if dictionary["path"] == "/comment":
             received_info = post_comment(dictionary, byte_array_response)
+            received_info = security_check(received_info)
             self.archive.append(received_info)
             return_response = build_response_comment(self.file_paths, self.archive)
         elif dictionary["path"] == "/image-upload":
