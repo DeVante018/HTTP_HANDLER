@@ -44,7 +44,7 @@ def on_get(p_obj, dictionary) -> bytes:
 
 def check_images():
     home_page = "src/sample_page/index.html"
-    template_image = "<img src=\"/image/{REPLACE}\" style=\"width:500px;height:600px;\">"
+    template_image = "<img src=\"/image/{REPLACE}\" style=\"width:300px;height:300px;\">"
     template_caption = "<p>{REPLACE}</p><br>"
     # print(template_image)
     # landing = h.read
