@@ -2,7 +2,7 @@ import paths
 
 
 def build_response_comment(p_obj, content_arr):
-    template = open("/Users/devantefrederick/IdeaProjects/HTTP_HANDLER/src/sample_page/index.html", "r")
+    template = open("/Users/devantefrederick/IdeaProjects/HTTP_HANDLER/src/sample_page/default_page.html", "r")
     template = template.readlines()
     new_template = ""
     comment_section = False
@@ -21,6 +21,8 @@ def build_response_comment(p_obj, content_arr):
             comment_section = False
 
         new_template += x
+        f = open("/Users/devantefrederick/IdeaProjects/HTTP_HANDLER/src/sample_page/index.html", "w")
+        f.write(new_template)
     # print(new_template)
 
     response_bytes = bytes(new_template, "utf8")
@@ -126,6 +128,7 @@ def upload_image(self_obj, headers, parse_array, socket, split_len):
 
     self_obj.images.append([caption.decode(), received])
     w = open("/Users/devantefrederick/IdeaProjects/HTTP_HANDLER/src/uploads/image"+str(self_obj.upload_num)+".jpg", "wb")
+    self_obj.upload_num += 1
     w.write(received)
     # return test_recieved_image(p, received)
     return good(paths.Paths())
@@ -136,14 +139,14 @@ def good(p_obj):
     build_str += p_obj.http_version + " " + p_obj.ok
     build_str += p_obj.slash_rn
     build_str += p_obj.content_length
-    build_str += str(len("file uploaded"))
+    build_str += str(len("image uploaded with caption successful"))
     build_str += p_obj.slash_rn
     build_str += p_obj.content_text_html
     build_str += p_obj.slash_rn
     build_str += p_obj.no_sniff
     build_str += p_obj.slash_rn + p_obj.slash_rn
     convert_bytes = bytes(build_str, encoding='utf8')
-    convert_bytes += bytes("file uploaded", "utf8")
+    convert_bytes += bytes("image uploaded with caption successful", "utf8")
     return convert_bytes
 
 
