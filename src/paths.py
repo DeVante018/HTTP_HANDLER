@@ -14,6 +14,7 @@ class Paths:
     err_client = "400"
     err_server = "500"
     slash_rn = "\r\n"
+    slash_rn_rn = "\r\n\r\n"
 
     content_text_plain = "Content-Type: text/plain; charset=utf-8"
     content_text_css = "Content-Type: text/css; charset=utf-8"
