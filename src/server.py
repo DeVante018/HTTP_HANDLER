@@ -33,6 +33,14 @@ if __name__ == "__main__":
 
     # Create the server, binding to localhost on port
     print("(address will not work when running in docker) Server started at -> ", "http://" + HOST + ":" + str(PORT) + "\n")
+    # this resets the home page to its original state fro when there server first starts up
+    reset = open("/Users/devantefrederick/IdeaProjects/HTTP_HANDLER/src/sample_page/default_page.html", "r")
+    read_in = reset.read()
+    home_page = open("/Users/devantefrederick/IdeaProjects/HTTP_HANDLER/src/sample_page/index.html", "w")
+    home_page.write(read_in)
+    reset.close()
+    home_page.close()
+
     sys.stdout.flush()
     with socketserver.ThreadingTCPServer((HOST, PORT), MyTCPHandler) as server:
         # Activate the server; this will keep running until you
