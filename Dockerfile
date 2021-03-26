@@ -1,10 +1,10 @@
 FROM python:3.9-slim-buster
 
-ENV HOME/ homework_2
+ENV HOME/ HTTP_HANDLER
 
-WORKDIR / homework_2
+WORKDIR / HTTP_HANDLER
 
-COPY ../../.Trash/homework%20_2%20copy .
+COPY . .
 
 EXPOSE 8000
 
