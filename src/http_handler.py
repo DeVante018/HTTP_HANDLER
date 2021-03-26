@@ -15,14 +15,15 @@ class RequestHandler:
     get_handler = Get()
     post_handler = Post()
 
-    def handle(self, request) -> bytes:
+    def handle(self, socket, request) -> bytes:
         headers_map = {}
         byte_array = bytearray(request)
         split_array = byte_array.split(bytes("\r\n\r\n", encoding="utf8"))
+        split_len = len(split_array)
         sanitize = split_array[0].decode()  # change this to handle multi part form data
         split_data = sanitize.splitlines()
 
-        for x in request.decode().splitlines():
+        for x in request.splitlines():
             print(x)
         print("\n")
 
@@ -42,11 +43,12 @@ class RequestHandler:
                 headers_map[header_split[0]] = header_split[1].replace(" ", "")
             i += 1
 
+        # print(headers_map)
         return_bytes = bytes
 
         if headers_map["request_type"] == "GET":
             return_bytes = self.get_handler.process(headers_map)
         elif headers_map["request_type"] == "POST":
-            return_bytes = self.post_handler.process(headers_map, split_array)
+            return_bytes = self.post_handler.process(socket, headers_map, split_array, split_len)
         # process the request based on what it is
         return return_bytes
