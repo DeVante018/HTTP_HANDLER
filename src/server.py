@@ -21,7 +21,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         sys.stdout.flush()
         my_handler = RequestHandler()
         # self.request is the TCP socket connected to the client
-        self.data = self.request.recv(1024).strip()
+        self.data = self.request.recv(2000).strip()
         send_data = my_handler.handle(self, self.data)
         sys.stdout.flush()
         print("SENDING.... ", send_data)
