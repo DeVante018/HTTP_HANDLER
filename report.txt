@@ -1,0 +1,97 @@
+ISSUES: Firefox needs to manually be refreshed in order to see new content from server
+
+
+**HOMEWORK 2**
+server.py:
+
+This Python file is where my tcp server is located.
+When my server gets a request, the override handle method will process that request through my RequestHandler class.
+
+
+http_handler.py:
+
+	In this file is where my RequestHandler class will be Found.
+	RequestHandler has a parser function that will parse the request header and their associated value into a dictionary.
+	This dictionary will be used later when processing a get or post request. More headers can be parsed and put into the dictionary.
+	This will be done for homework 3. You will also find a member function called process. This is the function that will process the request and determine what to do with the http request.
+
+
+On_get:
+
+	On get is the function called when the value at dictionary[â€œrequest_typeâ€] is equal to a get request.
+	Inside this function is where I check the requested path that the user asked for dictionary [â€œpathâ€].
+	There were 6 paths to check in total with my implementation. All of these checked paths would lead to build_response being called.
+
+
+Build_response:
+
+	This function is what creates the response header and body. In here I create the response headers based off what information was provided in the function arguments.
+	This gets turned into bytes and the content Iâ€™m serving to the end user gets appended to this header as bytes.
+
+
+Process_query:
+
+	This function is specifically made for processing queries to the server.
+	In here I parse the query string and loop through all requested items in that query.
+	I replace my placeholders in my html file with these queries and serve them back to the client as bytes.
+	The web browser will then make request to my server for all the content needed and that will be handled in Build_response with my â€œimageâ€ path check.
+
+
+Paths.py:
+
+	This is a file with a class called Paths (probably should get a better name because It doesnâ€™t just contain paths).
+	This class contains all of my consistent strings ex: response types, file paths, error message etc.
+	This ensures I donâ€™t have to hardcode a bunch of strings and it keeps minor spelling errors preventable or easy to fix
+
+**HOMEWORK 3**
+
+
+on_post.py:
+
+    This file will have the classes and methods to be able to handle all post request.
+
+
+process:
+
+    This will parse the Post request path and check what information the user is sending
+
+
+security_check:
+
+    escapes characters so users cannot inject HTML into the website
+
+
+error:
+
+    This is the error response builder in case a post request is made to a non supported path
+
+
+good:
+
+    This is a redirect to the home page for good request
+
+
+upload_image:
+
+    This function is what will take the user uploaded and image and store it on the server. I first split the response
+    by the bytes of "\r\n\r\n" I parse and read the headers and get the boundary. I then parse the body of the response
+    by the bytes of the boundary and start reading the required data into receive. My while loop will repeat this process until it finds
+    the last boundary with the trailing "--". I then read the caption and escape any html. I write the image to the images directory
+    and store the name of the image (custom built by server) and the caption in an array. I respond with a redirect to the home page
+
+
+upload_comment:
+
+    This is very similar to upload_image except I dont have to worry about my buffer in this particular case.
+    I can simply parse or the fields I need and store them in a data structure
+
+
+build response:
+
+    this will reload the template for the home page and update it with all comments stored on the server with names
+
+
+check_images:
+    This will update the homepage with any new images stored on the server. Whenever you land on the home page, this will
+    be done
+
