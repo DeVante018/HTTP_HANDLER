@@ -77,6 +77,10 @@ def post_comment(dictionary, byt_array):
 
 
 def upload_image(self_obj, headers, parse_array, socket, split_len):
+    print("LENGTH--------LENGTH")
+    print(headers['Content-Length'])
+    print("LENGTH--------LENGTH")
+
     boundary = headers['Content-Type'].split("=")
     in_boundary = "--" + boundary[1]
     encoded = bytes(in_boundary, "utf8")
@@ -116,12 +120,47 @@ def upload_image(self_obj, headers, parse_array, socket, split_len):
             caption = split_data[len(split_data)-2]
         received += incoming_data
         # print(incoming_data)
+    print("FULL DATA: ", received)
     print("Done reading...")
     print("Uploaded image with caption: " + caption.decode())
-    print("FULL DATA: ", received)
 
     self_obj.images.append([caption.decode(), received])
-    return bytes("Good response", encoding="utf8")
+    w = open("/Users/devantefrederick/IdeaProjects/HTTP_HANDLER/src/uploads/image"+str(self_obj.upload_num)+".jpg", "wb")
+    w.write(received)
+    # return test_recieved_image(p, received)
+    return good(paths.Paths())
+
+
+def good(p_obj):
+    build_str = ""
+    build_str += p_obj.http_version + " " + p_obj.ok
+    build_str += p_obj.slash_rn
+    build_str += p_obj.content_length
+    build_str += str(len("file uploaded"))
+    build_str += p_obj.slash_rn
+    build_str += p_obj.content_text_html
+    build_str += p_obj.slash_rn
+    build_str += p_obj.no_sniff
+    build_str += p_obj.slash_rn + p_obj.slash_rn
+    convert_bytes = bytes(build_str, encoding='utf8')
+    convert_bytes += bytes("file uploaded", "utf8")
+    return convert_bytes
+
+
+def test_recieved_image(p_obj, array):
+    build_str = ""
+    build_str += p_obj.http_version + " " + p_obj.ok
+    build_str += p_obj.slash_rn
+    build_str += p_obj.content_length
+    build_str += str(len(array))
+    build_str += p_obj.slash_rn
+    build_str += p_obj.content_image_jpg
+    build_str += p_obj.slash_rn
+    build_str += p_obj.no_sniff
+    build_str += p_obj.slash_rn_rn
+    convert_bytes = bytes(build_str, encoding='utf8')
+    convert_bytes += array
+    return convert_bytes
 
 
 def error(p_obj):
@@ -147,6 +186,7 @@ class Post:
     archive = []
     images = []
     file_paths = paths.Paths()
+    upload_num = 1
     return_response = bytes("", "utf8")
 
     def process(self, socket, dictionary: dict, byte_array_response, split_len):
