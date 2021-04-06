@@ -1,5 +1,6 @@
 import socketserver
 import sys
+import random
 from http_handler import RequestHandler
 
 """resources"""
@@ -24,19 +25,21 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         self.data = self.request.recv(2000).strip()
         send_data = my_handler.handle(self, self.data)
         sys.stdout.flush()
-        print("SENDING.... ", send_data)
+        #print("SENDING.... ", send_data, "/n")
         self.request.sendall(send_data)  # data is already in bytes so no need to encode
 
 
 if __name__ == "__main__":
-    HOST, PORT = "0.0.0.0", 8000
+    port = "800"
+    port += str(random.randint(0, 9))  # Temporary so I can just restart without worrying about the port
+    HOST, PORT = "0.0.0.0", int(port)
 
     # Create the server, binding to localhost on port
     print("(address will not work when running in docker) Server started at -> ", "http://" + HOST + ":" + str(PORT) + "\n")
     # this resets the home page to its original state fro when there server first starts up
-    reset = open("src/sample_page/default_page.html", "r")
+    reset = open("../src/sample_page/default_page.html", "r")
     read_in = reset.read()
-    home_page = open("src/sample_page/index.html", "w")
+    home_page = open("../src/sample_page/index.html", "w")
     home_page.write(read_in)
     reset.close()
     home_page.close()
