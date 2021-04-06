@@ -3,7 +3,6 @@
     <title>CSE312 Sample Front End</title>
     <link rel="stylesheet" type="text/css" href="style.css"/>
 </head>
-<body onload="welcomeAlert();">
 
 <h1>Enter name and comment</h1>
 
@@ -26,6 +25,20 @@
     <input id="image-form-name" type="text" name="name">
     <input type="submit" value="Submit">
 </form>
+
+<br>
+<h1>LIVE CHAT</h1>
+<hr>
+
+<label for="chat-name">usr: </label>
+<input id="chat-name" type="text" name="usr">
+<br/>
+<label for="chat-comment">text: </label>
+<input id="chat-comment" type="text" name="text">
+
+<button onclick="sendMessage()">Chat</button>
+<script src="functions.js"></script>
+<div id="chat"></div>
 
 </body>
 </html>
