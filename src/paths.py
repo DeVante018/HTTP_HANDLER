@@ -26,6 +26,7 @@ class Paths:
 
     utf_8 = "/utf.txt"
     styles_css = "/style.css"
+    socket = "/websocket"
 
     flamingo_image = "/image/flamingo.jpg"
 
