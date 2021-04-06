@@ -1,4 +1,5 @@
 import paths
+import web_sock
 from containers import Statics
 
 
@@ -21,21 +22,27 @@ def on_get(p_obj, dictionary) -> bytes:
         ret_data = convert_bytes
 
     elif dictionary["path"] == p_obj.styles_css:
-        file_path = "src/sample_page/style.css"
+        file_path = "../src/sample_page/style.css"
         ret_data = build_response(p_obj, file_path, p_obj.content_text_css, False)
 
     elif dictionary["path"] == p_obj.functions_js:
-        file_path = "src/sample_page/functions.js"
+        file_path = "../src/sample_page/functions.js"
         ret_data = build_response(p_obj, file_path, p_obj.content_text_javascript, False)
 
     elif dictionary["path"] == p_obj.utf_8:
-        file_path = "src/sample_page/utf.txt"
+        file_path = "../src/sample_page/utf.txt"
         ret_data = build_response(p_obj, file_path, p_obj.content_text_plain, False)
 
     elif dictionary["path"].split("/")[1] == "image":
-        file_path = "src/sample_page"
+        file_path = "../src/sample_page"
         file_path += dictionary["path"]
         ret_data = build_response(p_obj, file_path, p_obj.content_image_jpg, False)
+
+    elif dictionary["path"] == p_obj.socket:
+        print("Do some socket processing here\n")
+        if dictionary['Connection'] == 'Upgrade':
+            ret_data = web_sock.upgrade_connection(dictionary['Sec-WebSocket-Key'])
+
     else:
         content = process_query(p_obj, dictionary["path"])
         ret_data = build_response(p_obj, content, p_obj.content_text_html, True)
@@ -43,7 +50,7 @@ def on_get(p_obj, dictionary) -> bytes:
 
 
 def check_images():
-    home_page = "src/sample_page/index.html"
+    home_page = "../src/sample_page/index.html"
     template_image = "<img src=\"/image/{REPLACE}\" style=\"width:300px;height:300px;\">"
     template_caption = "<p>{REPLACE}</p><br>"
     # print(template_image)
