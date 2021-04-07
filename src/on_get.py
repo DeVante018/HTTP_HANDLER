@@ -3,7 +3,7 @@ import web_sock
 from containers import Statics
 
 
-def on_get(p_obj, dictionary) -> bytes:
+def on_get(p_obj, dictionary, socket) -> bytes:
     ret_data = ""
     if dictionary["path"] == p_obj.get_root:
         ret_data = check_images()
@@ -39,10 +39,10 @@ def on_get(p_obj, dictionary) -> bytes:
         ret_data = build_response(p_obj, file_path, p_obj.content_image_jpg, False)
 
     elif dictionary["path"] == p_obj.socket:
-        print("Do some socket processing here\n")
-        if dictionary['Connection'] == 'Upgrade':
-            ret_data = web_sock.upgrade_connection(dictionary['Sec-WebSocket-Key'])
-
+        ret_data = web_sock.upgrade_connection(dictionary['Sec-WebSocket-Key'])
+        socket.request.sendall(ret_data)
+        # now we have to keep the socket connection open
+        web_sock.read_socket(socket)
     else:
         content = process_query(p_obj, dictionary["path"])
         ret_data = build_response(p_obj, content, p_obj.content_text_html, True)
@@ -132,7 +132,6 @@ def process_query(path_obj, path):
 
 class Get:
     file_paths = paths.Paths()
-
-    def process(self, request: dict):
-        bytes_of_data = on_get(self.file_paths, request)
+    def process(self, request: dict, socket):
+        bytes_of_data = on_get(self.file_paths, request, socket)
         return bytes_of_data
