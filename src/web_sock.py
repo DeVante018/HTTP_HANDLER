@@ -1,4 +1,5 @@
 from bitstring import BitArray
+from containers import Statics
 import hashlib
 import base64
 
@@ -48,15 +49,8 @@ def show_frame(data):
     return bits_array
 
 
-def build_frame(payload_data, data_chunks):
-    # payload_data = hex(int(payload_data, 2))
-    # payload_data = payload_data.encode()
-    # payload_data = payload_data.replace(b"&", b"&amp;")
-    # payload_data = payload_data.replace(b"<", b"&lt;")
-    # payload_data = payload_data.replace(b">", b"&gt;")
-    # c = BitArray(payload_data)
-    # print(c.bin)
-    # print(payload_data)
+def build_frame(data_chunks):
+
     frame = 129
     frame = frame.to_bytes(1, 'big')  # first 8 bytes are guaranteed this for this assignment
     data_in_bytes = bytes()
@@ -69,8 +63,27 @@ def build_frame(payload_data, data_chunks):
     data_in_bytes = data_in_bytes.replace(b"&", b"&amp;")
     data_in_bytes = data_in_bytes.replace(b"<", b"&lt;")
     data_in_bytes = data_in_bytes.replace(b">", b"&gt;")
-    payload_len = len(data_in_bytes)  # divide total amount of bits read by 8 to get amount of bytes
-    frame += payload_len.to_bytes(1, 'big')
+    payload_len = len(data_in_bytes)
+    print(payload_len)
+    if payload_len < 126:
+        frame += payload_len.to_bytes(1, 'big')
+    elif 126 <= payload_len < 65536:
+        full = 126
+        frame += full.to_bytes(1, 'big')
+        new_len = format(payload_len, '016b')
+        first_num = ""
+        second_num = ""
+        for num in range(16):
+            if num < 8:
+                first_num += new_len[num]
+            else:
+                second_num += new_len[num]
+        first_num = int(first_num, 2)
+        second_num = int(second_num, 2)
+        frame += first_num.to_bytes(1, 'big')
+        frame += second_num.to_bytes(1, 'big')
+    else:
+        print("This wouldn't even work because my recv buffer isn't big enough to handle this")
     frame += data_in_bytes
     print(frame)
     return frame
@@ -158,8 +171,10 @@ def read_socket(skt):
                     data_in_bits += format(xor, "08b")
                     idx += 1
             print(data_in_bits)
-            send = build_frame(data_in_bits, unmasked_data)
-            skt.request.sendall(send)
+            send = build_frame(unmasked_data)
+            Statics.server_chat_history.append(send)
+            for all_connection in Statics.server_web_sockets:
+                all_connection.sendall(send)
         except:
             print("Socket closed on error...")
             return
