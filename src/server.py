@@ -1,6 +1,7 @@
 import socketserver
 import sys
 import random
+import containers
 from http_handler import RequestHandler
 
 """resources"""
@@ -10,15 +11,8 @@ from http_handler import RequestHandler
 
 
 class MyTCPHandler(socketserver.BaseRequestHandler):
-    """
-    The request handler class for our server.
-
-    It is instantiated once per connection to the server, and must
-    override the handle() method to implement communication to the
-    client.
-    """
-
     def handle(self):
+
         sys.stdout.flush()
         my_handler = RequestHandler()
         # self.request is the TCP socket connected to the client
