@@ -41,6 +41,12 @@ def on_get(p_obj, dictionary, socket) -> bytes:
     elif dictionary["path"] == p_obj.socket:
         ret_data = web_sock.upgrade_connection(dictionary['Sec-WebSocket-Key'])
         socket.request.sendall(ret_data)
+        client_id = socket.client_address[0] + str(socket.client_address[1])
+        Statics.server_clients.append(client_id)
+        Statics.server_web_sockets.append(socket.request)
+        # send all the chat history to newly connected client
+        for messages in Statics.server_chat_history:
+            socket.request.sendall(messages)
         # now we have to keep the socket connection open
         web_sock.read_socket(socket)
     else:
