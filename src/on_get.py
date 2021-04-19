@@ -22,19 +22,19 @@ def on_get(p_obj, dictionary, socket) -> bytes:
         ret_data = convert_bytes
 
     elif dictionary["path"] == p_obj.styles_css:
-        file_path = "../src/sample_page/style.css"
+        file_path = "src/sample_page/style.css"
         ret_data = build_response(p_obj, file_path, p_obj.content_text_css, False)
 
     elif dictionary["path"] == p_obj.functions_js:
-        file_path = "../src/sample_page/functions.js"
+        file_path = "src/sample_page/functions.js"
         ret_data = build_response(p_obj, file_path, p_obj.content_text_javascript, False)
 
     elif dictionary["path"] == p_obj.utf_8:
-        file_path = "../src/sample_page/utf.txt"
+        file_path = "src/sample_page/utf.txt"
         ret_data = build_response(p_obj, file_path, p_obj.content_text_plain, False)
 
     elif dictionary["path"].split("/")[1] == "image":
-        file_path = "../src/sample_page"
+        file_path = "src/sample_page"
         file_path += dictionary["path"]
         ret_data = build_response(p_obj, file_path, p_obj.content_image_jpg, False)
 
@@ -45,8 +45,10 @@ def on_get(p_obj, dictionary, socket) -> bytes:
         Statics.server_clients.append(client_id)
         Statics.server_web_sockets.append(socket.request)
         # send all the chat history to newly connected client
-        for messages in Statics.server_chat_history:
-            socket.request.sendall(messages)
+        all_messages = Statics.chat.find()
+        for queries in all_messages:
+            print(queries['message'])
+            socket.request.sendall(queries['message'])
         # now we have to keep the socket connection open
         web_sock.read_socket(socket)
     else:
@@ -56,7 +58,7 @@ def on_get(p_obj, dictionary, socket) -> bytes:
 
 
 def check_images():
-    home_page = "../src/sample_page/index.html"
+    home_page = "src/sample_page/index.html"
     template_image = "<img src=\"/image/{REPLACE}\" style=\"width:300px;height:300px;\">"
     template_caption = "<p>{REPLACE}</p><br>"
     # print(template_image)
