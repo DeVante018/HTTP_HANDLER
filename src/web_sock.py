@@ -1,3 +1,4 @@
+import pymongo
 from bitstring import BitArray
 from containers import Statics
 import hashlib
@@ -59,7 +60,7 @@ def build_frame(data_chunks):
         data_in_bytes += integer_rep.to_bytes(1, 'big')
         #print(integer_rep)
         # print(integer_rep.to_bytes(2, 'big'))
-    print(data_in_bytes)
+    print("data in bytes: ", data_in_bytes)
     data_in_bytes = data_in_bytes.replace(b"&", b"&amp;")
     data_in_bytes = data_in_bytes.replace(b"<", b"&lt;")
     data_in_bytes = data_in_bytes.replace(b">", b"&gt;")
@@ -172,7 +173,7 @@ def read_socket(skt):
                     idx += 1
             print(data_in_bits)
             send = build_frame(unmasked_data)
-            Statics.server_chat_history.append(send)
+            Statics.chat.insert_one({"message": send})
             for all_connection in Statics.server_web_sockets:
                 all_connection.sendall(send)
         except:
