@@ -21,7 +21,8 @@ class Paths:
     content_text_html = "Content-Type: text/html; charset=utf-8"
     content_text_javascript = "Content-Type: text/javascript; charset=utf-8"
     content_length = "Content-Length: "
-    content_image_jpg = "Content-Type: image/jpg; charset=utf-8"
+    content_image_jpg = "Content-Type: image/jpg;"
+    set_cookie = "Set-Cookie: id="
     no_sniff = "X-Content-Type-Options: nosniff"
 
     utf_8 = "/utf.txt"
