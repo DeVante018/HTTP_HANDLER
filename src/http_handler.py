@@ -47,7 +47,7 @@ class RequestHandler:
         return_bytes = bytes
 
         if headers_map["request_type"] == "GET":
-            return_bytes = self.get_handler.process(headers_map)
+            return_bytes = self.get_handler.process(headers_map,socket)
         elif headers_map["request_type"] == "POST":
             return_bytes = self.post_handler.process(socket, headers_map, split_array, split_len)
         # process the request based on what it is
