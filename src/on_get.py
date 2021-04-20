@@ -15,6 +15,8 @@ def on_get(p_obj, dictionary, socket) -> bytes:
         build_str += p_obj.slash_rn
         build_str += p_obj.content_text_html
         build_str += p_obj.slash_rn
+        build_str += p_obj.set_cookie
+        build_str += generate_cookie()
         build_str += p_obj.no_sniff
         build_str += p_obj.slash_rn + p_obj.slash_rn
         convert_bytes = bytes(build_str, encoding='utf8')
@@ -22,19 +24,19 @@ def on_get(p_obj, dictionary, socket) -> bytes:
         ret_data = convert_bytes
 
     elif dictionary["path"] == p_obj.styles_css:
-        file_path = "src/sample_page/style.css"
+        file_path = "../src/sample_page/style.css"
         ret_data = build_response(p_obj, file_path, p_obj.content_text_css, False)
 
     elif dictionary["path"] == p_obj.functions_js:
-        file_path = "src/sample_page/functions.js"
+        file_path = "../src/sample_page/functions.js"
         ret_data = build_response(p_obj, file_path, p_obj.content_text_javascript, False)
 
     elif dictionary["path"] == p_obj.utf_8:
-        file_path = "src/sample_page/utf.txt"
+        file_path = "../src/sample_page/utf.txt"
         ret_data = build_response(p_obj, file_path, p_obj.content_text_plain, False)
 
     elif dictionary["path"].split("/")[1] == "image":
-        file_path = "src/sample_page"
+        file_path = "../src/sample_page"
         file_path += dictionary["path"]
         ret_data = build_response(p_obj, file_path, p_obj.content_image_jpg, False)
 
@@ -58,7 +60,7 @@ def on_get(p_obj, dictionary, socket) -> bytes:
 
 
 def check_images():
-    home_page = "src/sample_page/index.html"
+    home_page = "../src/sample_page/index.html"
     template_image = "<img src=\"/image/{REPLACE}\" style=\"width:300px;height:300px;\">"
     template_caption = "<p>{REPLACE}</p><br>"
     # print(template_image)
@@ -125,7 +127,7 @@ def process_query(path_obj, path):
         images_query = images_query[1].split("+")
         for img in images_query:
             files_list.append(file + img + ".jpg")
-        read_file = open("src/sample_page/image_template.html",
+        read_file = open("../src/sample_page/image_template.html",
                          "r")
         read_file = read_file.read()
         for x in range(len(files_list)):
@@ -140,6 +142,7 @@ def process_query(path_obj, path):
 
 class Get:
     file_paths = paths.Paths()
+
     def process(self, request: dict, socket):
         bytes_of_data = on_get(self.file_paths, request, socket)
         return bytes_of_data
