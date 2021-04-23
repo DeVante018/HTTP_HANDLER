@@ -1,11 +1,14 @@
 import sys
 
+import Authentication
 import paths
+import bcrypt
+from strgen import StringGenerator as SG
 from containers import Statics
 
 
 def build_response_comment(p_obj, content_arr):
-    template = open("src/sample_page/default_page.html", "r")
+    template = open("../src/sample_page/default_page.html", "r")
     template = template.readlines()
     new_template = ""
     comment_section = False
@@ -24,7 +27,7 @@ def build_response_comment(p_obj, content_arr):
             comment_section = False
 
         new_template += x
-        f = open("src/sample_page/index.html", "w")
+        f = open("../src/sample_page/index.html", "w")
         f.write(new_template)
     # print(new_template)
     return good(p_obj)
@@ -49,7 +52,7 @@ def post_comment(dictionary, byt_array):
     idx = 1
     sanitizing = True
     while sanitizing:
-        print("IDX", idx)
+        # print("IDX", idx)
         sys.stdout.flush()
         data = mult_part[idx]
         # print(data)
@@ -125,7 +128,7 @@ def upload_image(self_obj, headers, parse_array, socket, split_len):
     Statics.captions_images.append([caption.decode(), img_name])
 
     self_obj.images.append([caption.decode(), received])
-    w = open("src/sample_page/image/image" + str(
+    w = open("../src/sample_page/image/image" + str(
         self_obj.upload_num) + ".jpg", "wb")
     self_obj.upload_num += 1
     w.write(received)
@@ -202,8 +205,57 @@ class Post:
             received_info = security_check(received_info)
             self.archive.append(received_info)
             return_response = build_response_comment(self.file_paths, self.archive)
+
         elif dictionary["path"] == "/image-upload":
             return_response = upload_image(self, dictionary, byte_array_response, socket, split_len)
+
+        elif dictionary['path'] == "/signup_user":
+            submission = post_comment(dictionary, byte_array_response)
+            username = submission[0].decode()
+            password = submission[1]
+            valid = Authentication.check_password(password.decode())
+            if valid:
+                salt = bcrypt.gensalt()
+                _hash = bcrypt.hashpw(password, salt)
+                Statics.usr_pwd.insert_one({"username": username, "password": _hash})
+                return good(self.file_paths)
+            else:
+                return Authentication.invalid_password()
+
+        elif dictionary['path'] == "/signin_user":
+            p = self.file_paths
+            submission = post_comment(dictionary, byte_array_response)
+            username = submission[0].decode()
+            password = submission[1]
+            get_user = Statics.usr_pwd.find({}, {'username', 'password'})
+
+            response = ""
+            response += p.http_version + " " + p.ok
+            response += p.slash_rn
+            response += p.content_text_html
+            response += p.slash_rn
+            response += p.content_length
+            is_valid = False
+            for users in get_user:
+                if users['username'] == username:
+                    if bcrypt.checkpw(password, users['password']):
+                        response += str(len("<h1>Your logged in</h1>\n<p>Back to homepage <a href=\"/\">click</a> here</p>"))
+                        response += p.slash_rn
+                        response += "Set-Cookie: Authentication="
+                        auth_cookie = SG(r"[\w]{500}").render()
+                        response += auth_cookie
+                        is_valid = True
+                        Statics.auth.insert_one({'Authentication': auth_cookie, "usr": username})
+                    else:
+                        response += str(len("<h1>Login failed</h1>\n<p>Back to homepage <a href=\"/\">click</a> here</p>"))
+            response += p.slash_rn
+            response += p.slash_rn
+            if is_valid:
+                response += "<h1>Your logged in</h1>\n<p>Back to homepage <a href=\"/\">click</a> here</p>"
+            else:
+                response += "<h1>Login failed</h1>\n<p>Back to homepage <a href=\"/\">click</a> here</p>"
+            return response.encode()
+
         else:
             return_response = error(self.file_paths)
 
