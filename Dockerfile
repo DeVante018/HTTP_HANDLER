@@ -1,7 +1,8 @@
 FROM python:3.8-slim-buster
 
 RUN pip install --upgrade pip && \
-        pip install bitstring && pip install pymongo
+        pip install bitstring && pip install pymongo \
+        && pip install StringGenerator && pip install bcrypt
 
 ENV HOME/ http
 
