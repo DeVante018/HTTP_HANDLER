@@ -21,7 +21,7 @@ def upgrade_connection(hash_key):
 def show_frame(data):
     count = 0
     bits_array = []
-    print("\n---------frame---------\n")
+    #print("\n---------frame---------\n")
     data = BitArray(data)
     build_byte = ""
     count = 1
@@ -36,17 +36,17 @@ def show_frame(data):
     level = 0
     while level < len(bits_array) - 1:
         if level + 3 < len(bits_array):
-            print(bits_array[level], bits_array[level + 1], bits_array[level + 2], bits_array[level + 3])
+            #(bits_array[level], bits_array[level + 1], bits_array[level + 2], bits_array[level + 3])
             level = level + 4
 
         elif level + 2 < len(bits_array):
-            print(bits_array[level], bits_array[level + 1], bits_array[level + 2])
+            #print(bits_array[level], bits_array[level + 1], bits_array[level + 2])
             level = level + 3
 
         else:
-            print(bits_array[level], bits_array[level + 1])
+            #print(bits_array[level], bits_array[level + 1])
             level = level + 2
-    print("\n---------frame---------\n")
+    #print("\n---------frame---------\n")
     return bits_array
 
 
@@ -60,12 +60,12 @@ def build_frame(data_chunks):
         data_in_bytes += integer_rep.to_bytes(1, 'big')
         #print(integer_rep)
         # print(integer_rep.to_bytes(2, 'big'))
-    print("data in bytes: ", data_in_bytes)
+    # print("data in bytes: ", data_in_bytes)
     data_in_bytes = data_in_bytes.replace(b"&", b"&amp;")
     data_in_bytes = data_in_bytes.replace(b"<", b"&lt;")
     data_in_bytes = data_in_bytes.replace(b">", b"&gt;")
     payload_len = len(data_in_bytes)
-    print(payload_len)
+    # print(payload_len)
     if payload_len < 126:
         frame += payload_len.to_bytes(1, 'big')
     elif 126 <= payload_len < 65536:
@@ -86,7 +86,7 @@ def build_frame(data_chunks):
     else:
         print("This wouldn't even work because my recv buffer isn't big enough to handle this")
     frame += data_in_bytes
-    print(frame)
+    # print(frame)
     return frame
 
 
@@ -103,26 +103,26 @@ def read_socket(skt):
             frame = show_frame(data)
             check_fin = int(frame[0][0], base=2) & 1
             check_opcode = int(frame[0][7], base=2) & 1
-            print("FIN: ", check_fin)
-            print("OPCODE: ", check_opcode)
+            # print("FIN: ", check_fin)
+            # print("OPCODE: ", check_opcode)
             if check_fin != 1:
-                print("FIN NOT 1: socket closed...")
+                # print("FIN NOT 1: socket closed...")
                 return
 
             if check_opcode != 1:
-                print("OPCODE NOT 1: socket closed...")
+                # print("OPCODE NOT 1: socket closed...")
                 return
 
             check_payload = int(frame[1], base=2) & pay_length
             if check_payload < 126:
                 mask_idx = 2
-                print("126 > PAYLOAD: ", check_payload)
+                # print("126 > PAYLOAD: ", check_payload)
 
             elif check_payload == 126:
                 nxt_16 = int(frame[2] + frame[3], base=2)
                 check_payload = nxt_16
                 mask_idx = 4
-                print("126 = PAYLOAD: ", check_payload)
+                # print("126 = PAYLOAD: ", check_payload)
 
             elif check_payload == 127:
                 nxt_64 = ""
@@ -130,16 +130,16 @@ def read_socket(skt):
                     nxt_64 = binary
                 check_payload = int(nxt_64, base=2)
                 mask_idx = 10
-                print("127 = PAYLOAD: ", check_payload)
+                # print("127 = PAYLOAD: ", check_payload)
 
             else:
-                print("Payload length error...")
+                # print("Payload length error...")
                 return
 
             # put 4 bytes of the mask inside of the an array, each byte being at one idx
             for idx in range(mask_idx, mask_idx + 4):
                 mask_block.append(frame[idx])
-            print("MASK_BYTES: ", mask_block)
+            # print("MASK_BYTES: ", mask_block)
             start_data = mask_idx + 4
             four_byte_chunk = []
             data_in_bits = ""
@@ -171,7 +171,7 @@ def read_socket(skt):
                     unmasked_data.append(format(xor, "08b"))  # putting each byte in an array
                     data_in_bits += format(xor, "08b")
                     idx += 1
-            print(data_in_bits)
+                # print(data_in_bits)
             send = build_frame(unmasked_data)
             Statics.chat.insert_one({"message": send})
             for all_connection in Statics.server_web_sockets:
