@@ -1,0 +1,64 @@
+<html>
+<head>
+    <title>CSE312 Sample Front End</title>
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+</head>
+
+<h1>Welcome Back because you have an Authentication token!!</h1>
+<br>
+
+<form action="/comment" id="comment-form" method="post" enctype="multipart/form-data">
+    <label for="text-form-name">Name: </label>
+    <input id="text-form-name" type="text" name="name"><br/>
+    <label for="form-comment">Comment: </label>
+    <input id="form-comment" type="text" name="comment">
+    <input type="submit" value="Submit">
+</form>
+
+
+<h1>Comments</h1>
+<br>
+<form action="/image-upload" id="image-form" method="post" enctype="multipart/form-data">
+    <label for="form-file">Image: </label>
+    <input id="form-file" type="file" name="upload">
+    <br/>
+    <label for="image-form-name">Caption: </label>
+    <input id="image-form-name" type="text" name="name">
+    <input type="submit" value="Submit">
+</form>
+
+<br>
+<hr>
+<h1>LIVE CHAT</h1>
+
+
+<label for="chat-name">usr: </label>
+<input id="chat-name" type="text" name="usr">
+<br/>
+<label for="chat-comment">text: </label>
+<input id="chat-comment" type="text" name="text">
+
+<button onclick="sendMessage()">Chat</button>
+<script src="functions.js"></script>
+<div id="chat"></div>
+
+<hr>
+<h1>Sign in</h1>
+
+<form action="signin_user" method="post" enctype="multipart/form-data">
+    <div class="container">
+        <label><b>Username</b></label>
+        <input type="text" placeholder="Enter Username" name="uname" required>
+
+        <label><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="psw" required>
+
+        <button type="submit">Login</button>
+    </div>
+</form>
+<p> Don't have an account? <a href="signup">sign up</a> here</p>
+
+<h1>$$replaceMe$$</h1>
+
+</body>
+</html>
