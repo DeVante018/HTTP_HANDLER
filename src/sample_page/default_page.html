@@ -15,9 +15,9 @@
     <input type="submit" value="Submit">
 </form>
 
+
 <h1>Comments</h1>
 <br>
-<hr>
 <form action="/image-upload" id="image-form" method="post" enctype="multipart/form-data">
     <label for="form-file">Image: </label>
     <input id="form-file" type="file" name="upload">
@@ -28,8 +28,9 @@
 </form>
 
 <br>
-<h1>LIVE CHAT</h1>
 <hr>
+<h1>LIVE CHAT</h1>
+
 
 <label for="chat-name">usr: </label>
 <input id="chat-name" type="text" name="usr">
@@ -40,6 +41,23 @@
 <button onclick="sendMessage()">Chat</button>
 <script src="functions.js"></script>
 <div id="chat"></div>
+
+<hr>
+<h1>Sign in</h1>
+
+<form action="signin_user" method="post" enctype="multipart/form-data">
+    <div class="container">
+        <label><b>Username</b></label>
+        <input type="text" placeholder="Enter Username" name="uname" required>
+
+        <label><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="psw" required>
+
+        <button type="submit">Login</button>
+    </div>
+</form>
+<p> Don't have an account? <a href="signup">sign up</a> here</p>
+
 
 </body>
 </html>
