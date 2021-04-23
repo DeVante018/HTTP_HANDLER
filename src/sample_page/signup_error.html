@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<p style="color:#ff0000"> invalid entry </p>
+<form action="signup_user" method="post" style="border:1px solid #000000" enctype="multipart/form-data">
+    <div class="container">
+        <h1>Sign Up</h1>
+
+        <label><b>Username</b></label>
+        <input type="text" placeholder="Enter username" name="username" required>
+
+        <label><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="psw" required>
+
+        <div class="clearfix">
+            <button id="submission" type="submit" class="signupbtn">Sign Up</button>
+        </div>
+    </div>
+</form>
+<p>Password requirements:</p>
+<p>- A minimum length of 8</p>
+<p>- At least 1 lowercase character</p>
+<p>- At least 1 uppercase character</p>
+<p>- At least 1 number</p>
+<p>- At least 1 special character</p>
+<p>- At least 1 "!"</p>
+<p>Back to homepage <a href="/">click</a> here</p>
+
+</body>
+</html>
