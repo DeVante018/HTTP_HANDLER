@@ -8,6 +8,7 @@ class Paths:
     icon = "GET/favicon.icoHTTP/1.1"
     post_request = "POST/HTTP/1.1"
     comment = "POST/comment"
+    signup = "/signup"
 
     ok = "200"
     redirect = "301"
@@ -16,10 +17,10 @@ class Paths:
     slash_rn = "\r\n"
     slash_rn_rn = "\r\n\r\n"
 
-    content_text_plain = "Content-Type: text/plain; charset=utf-8"
+    content_text_plain = "Content-Type: text/plain"
     content_text_css = "Content-Type: text/css; charset=utf-8"
-    content_text_html = "Content-Type: text/html; charset=utf-8"
-    content_text_javascript = "Content-Type: text/javascript; charset=utf-8"
+    content_text_html = "Content-Type: text/html"
+    content_text_javascript = "Content-Type: text/javascript"
     content_length = "Content-Length: "
     content_image_jpg = "Content-Type: image/jpg;"
     set_cookie = "Set-Cookie: id="
