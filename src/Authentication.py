@@ -1,3 +1,5 @@
+import bcrypt
+
 from containers import Statics
 from paths import Paths
 
@@ -16,6 +18,9 @@ def check_cookie(client):
 
 def check_authentication():
     current_token = Statics.token
+    salt = bcrypt.gensalt()
+    _hash = bcrypt.hashpw(current_token.encode(), salt)
+    print("Current token: ", current_token)
     get_token = Statics.auth.find({"Authentication": current_token})
     user_name = "----"
     login = False
