@@ -245,6 +245,8 @@ class Post:
                         auth_cookie = SG(r"[\w]{500}").render()
                         response += auth_cookie
                         is_valid = True
+                        salt = bcrypt.gensalt()
+                        _hash = bcrypt.hashpw(auth_cookie.encode(), salt)
                         Statics.auth.insert_one({'Authentication': auth_cookie, "usr": username})
                     else:
                         response += str(len("<h1>Login failed</h1>\n<p>Back to homepage <a href=\"/\">click</a> here</p>"))
