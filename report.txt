@@ -1,7 +1,47 @@
-ISSUES: Firefox needs to manually be refreshed in order to see new content from server
+ISSUES: Fixed empty cursor issue and session not being remembered. Authentication page will display the correct user
+
+**HOMEWORK 5**
+
+check_cookie:
+    This function will check the cookie sent by the server and compare it to the one stored in the database. If the cookie does
+    exist and matches what is stored, this means the user has already visited the site and will display a message greeting them
+    based off this.
+
+check_authentication:
+    If a user has signed in already, an authentication token will be set with the users name mapped to it and put on the database.
+    These tokens are hashed. When the user returns to visit the auth token will be searched in the database and if they match the
+    user will be logged in as the name matching to the hash.
+
+check_password: $$BONUS$$
+    this will receive the entered password by the user and check by ascii value if each of the requirement for the password is
+    satisfied. Each requirement is represented by a boolean value and if each condition is met, the function will return true.
+
+invalid_password:
+    In this method I create a response that is specifically for prompting the user the password they entered does not fit credentials
+
+generate_cookie():
+    This function will generate a cookie by using a random string generator. This is then used as a cookie
 
 
-**HOMEWORK 2**
+HOMEWORK 4
+
+upgrade_connection:
+    This function will create the 101 response for any request that comes in as request to upgrade the request to a web
+    socket. It calculates and gets the correct hash for the Sec-WebSocket-Accept field
+
+show frame:
+    this was for debugging but it also returned an array where each index was the byte of the websocket frame represented in bits
+
+read_socket:
+    this is the method that checked the fin, opcode, mask, mask_byte and payload. after all process are done it sends the built frame
+    to all sockets currently connected
+
+build_frame:
+    this takes an array of bits and will form it in a way that males it appropriate to send back over the tcp web socket. This is where
+    I escape all html and check the user input. I then calculate the length and return the new frame
+
+
+HOMEWORK 2
 server.py:
 
 This Python file is where my tcp server is located.
@@ -10,40 +50,40 @@ When my server gets a request, the override handle method will process that requ
 
 http_handler.py:
 
-	In this file is where my RequestHandler class will be Found.
-	RequestHandler has a parser function that will parse the request header and their associated value into a dictionary.
-	This dictionary will be used later when processing a get or post request. More headers can be parsed and put into the dictionary.
-	This will be done for homework 3. You will also find a member function called process. This is the function that will process the request and determine what to do with the http request.
+    In this file is where my RequestHandler class will be Found.
+    RequestHandler has a parser function that will parse the request header and their associated value into a dictionary.
+    This dictionary will be used later when processing a get or post request. More headers can be parsed and put into the dictionary.
+    This will be done for homework 3. You will also find a member function called process. This is the function that will process the request and determine what to do with the http request.
 
 
 On_get:
 
-	On get is the function called when the value at dictionary[â€œrequest_typeâ€] is equal to a get request.
-	Inside this function is where I check the requested path that the user asked for dictionary [â€œpathâ€].
-	There were 6 paths to check in total with my implementation. All of these checked paths would lead to build_response being called.
+    On get is the function called when the value at dictionary[â€œrequest_typeâ€] is equal to a get request.
+    Inside this function is where I check the requested path that the user asked for dictionary [â€œpathâ€].
+    There were 6 paths to check in total with my implementation. All of these checked paths would lead to build_response being called.
 
 
 Build_response:
 
-	This function is what creates the response header and body. In here I create the response headers based off what information was provided in the function arguments.
-	This gets turned into bytes and the content Iâ€™m serving to the end user gets appended to this header as bytes.
+    This function is what creates the response header and body. In here I create the response headers based off what information was provided in the function arguments.
+    This gets turned into bytes and the content Iâ€™m serving to the end user gets appended to this header as bytes.
 
 
 Process_query:
 
-	This function is specifically made for processing queries to the server.
-	In here I parse the query string and loop through all requested items in that query.
-	I replace my placeholders in my html file with these queries and serve them back to the client as bytes.
-	The web browser will then make request to my server for all the content needed and that will be handled in Build_response with my â€œimageâ€ path check.
+    This function is specifically made for processing queries to the server.
+    In here I parse the query string and loop through all requested items in that query.
+    I replace my placeholders in my html file with these queries and serve them back to the client as bytes.
+    The web browser will then make request to my server for all the content needed and that will be handled in Build_response with my â€œimageâ€ path check.
 
 
 Paths.py:
 
-	This is a file with a class called Paths (probably should get a better name because It doesnâ€™t just contain paths).
-	This class contains all of my consistent strings ex: response types, file paths, error message etc.
-	This ensures I donâ€™t have to hardcode a bunch of strings and it keeps minor spelling errors preventable or easy to fix
+    This is a file with a class called Paths (probably should get a better name because It doesnâ€™t just contain paths).
+    This class contains all of my consistent strings ex: response types, file paths, error message etc.
+    This ensures I donâ€™t have to hardcode a bunch of strings and it keeps minor spelling errors preventable or easy to fix
 
-**HOMEWORK 3**
+HOMEWORK 3
 
 
 on_post.py:
@@ -94,4 +134,3 @@ build response:
 check_images:
     This will update the homepage with any new images stored on the server. Whenever you land on the home page, this will
     be done
-
