@@ -51,10 +51,15 @@ class RequestHandler:
             length = len(parse_cookie)
         else:
             length = 0
-
+        print("LENGTH____", length)
         if length == 2:
-            parse_cookie = parse_cookie[1].split("=")
             Statics.current_cookie = parse_cookie[1]
+            Statics.token = parse_cookie[0].split('=')
+            parse_cookie = parse_cookie[1].split("=")
+            if len(Statics.token) > 1:
+                Statics.token = Statics.token[1]
+            else:
+                Statics.token = ""
         elif length == 3:
             auth_cookie = parse_cookie[2].split("=")
             Statics.token = auth_cookie[1]
@@ -64,8 +69,8 @@ class RequestHandler:
                 parse_cookie = parse_cookie[0].split("=")
                 if len(parse_cookie) > 1:
                     Statics.current_cookie = parse_cookie[1]
-
-            Statics.current_cookie = ""
+                else:
+                    Statics.current_cookie = ""
         if headers_map["request_type"] == "GET":
             return_bytes = self.get_handler.process(headers_map, socket)
         elif headers_map["request_type"] == "POST":
